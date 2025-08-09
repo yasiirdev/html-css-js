@@ -43,8 +43,7 @@ function winingpartten() {
     let p3 = boxes[partten[2]].innerText;
     if (p1 != "" && p2 != "" && p3 != "") {
       if (p1 === p2 && p2 === p3) {
-                win(p1);
-                return;
+                return win(p1);
       }
     }
   }
