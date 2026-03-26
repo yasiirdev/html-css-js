@@ -1,0 +1,47 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+#root{
+  width: 100%;
+  height: 100%;
+  background:#fff;
+}
+
+#rect{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50% , -50%);
+  width:70%;
+  height:fit-content;
+  font-size: 45px;
+  background: red;
+}
+
+/* h1{
+  background:red;
+} */
+
+.squ{
+  position: absolute;
+  width: 150px;
+  height: 200px;
+  overflow: hidden;
+}
+
+.squ>img{
+  transform: translateY(100%);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
