@@ -1,4 +1,7 @@
-import { userLive_geolocation } from "./utils/app.js";
+import { getSearchLocation, userLive_geolocation } from "./utils/app.js";
 
-
-userLive_geolocation();
+class weather {
+    constructor() {
+        
+    }
+}
