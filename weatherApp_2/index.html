@@ -21,7 +21,7 @@
                     <h1 class="text-2xl font-semibold sm:text-3xl">Weatherly</h1>
                 </div>
 
-                <div class="flex items-center gap-2 rounded-2xl border border-white/15 bg-slate-900/70 p-2"
+                <form class="flex items-center gap-2 rounded-2xl border border-white/15 bg-slate-900/70 p-2"
                     role="search">
                     <label for="location" class="sr-only">Search for a city</label>
                     <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -31,12 +31,12 @@
                     <input id="location" type="text" placeholder="Search city"
                         class="w-full bg-transparent px-2 py-1 text-sm text-white outline-none placeholder:text-slate-400 sm:w-56" />
 
-                    <button id="submitBtu"
+                    <button id="submitBtu" type="submit"
                         class="rounded-xl bg-sky-500 px-3 py-2 text-sm font-medium text-white transition hover:bg-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-300">
                         Search
                     </button>
                     </>
-                </div>
+                </>
         </header>
 
         <main class="mt-4 grid gap-4 lg:grid-cols-[1.35fr_0.65fr]">
@@ -49,14 +49,14 @@
                     <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                         <div>
                             <p class="text-sm font-medium text-sky-50/90">Current weather</p>
-                            <h2 class="mt-2 text-2xl font-semibold sm:text-2xl" id="locationName">libon</h2>
+                            <h2 class="mt-2 text-md font-semibold sm:text-md" id="locationName">libon</h2>
                             <p class="mt-2 text-lg text-sky-50/90">Mostly clear · Light breeze</p>
                         </div>
 
                         <div class="rounded-3xl border border-white/20 bg-white/20 px-4 py-3 text-right backdrop-blur">
                             <p class="text-sm text-sky-50/80">Today</p>
-                            <p class="text-4xl font-semibold"><span id="tem">24</span>°</p>
-                            <p class="text-sm text-sky-50/80">Feels like <span class="feeltem">26</span>°</p>
+                            <p class="text-4xl font-semibold"><span class="tem">16</span>°</p>
+                            <p class="text-sm text-sky-50/80">Feels like <span class="feeltem">14</span>°</p>
                         </div>
                     </div>
 
@@ -67,7 +67,7 @@
                                 ☀️
                             </div>
                             <div>
-                                <p class="text-5xl font-semibold tracking-tight sm:text-6xl"><span class="feeltem">26</span>°</p>
+                                <p class="text-5xl font-semibold tracking-tight sm:text-6xl"><span class="feeltem">14</span>°</p>
                                 <p class="text-sm text-sky-50/85">Warm and sunny</p>
                             </div>
                         </div>
@@ -76,12 +76,12 @@
                             <div
                                 class="rounded-2xl border border-white/20 bg-slate-950/20 px-3 py-3 text-center backdrop-blur">
                                 <p class="text-xs uppercase tracking-[0.2em] text-sky-50/70">Humidity</p>
-                                <p class="mt-1 text-lg font-semibold">64%</p>
+                                <p class="mt-1 text-lg font-semibold"><span id="humidity">65</span>%</p>
                             </div>
                             <div
                                 class="rounded-2xl border border-white/20 bg-slate-950/20 px-3 py-3 text-center backdrop-blur">
                                 <p class="text-xs uppercase tracking-[0.2em] text-sky-50/70">Wind</p>
-                                <p class="mt-1 text-lg font-semibold">12 km/h</p>
+                                <p class="mt-1 text-lg font-semibold"><span id="windspeed">12</span>km/h</p>
                             </div>
                             <div
                                 class="rounded-2xl border border-white/20 bg-slate-950/20 px-3 py-3 text-center backdrop-blur">
@@ -112,7 +112,7 @@
                         </div>
                         <div class="flex items-center justify-between rounded-2xl bg-slate-800/80 px-4 py-3">
                             <span class="text-sm text-slate-300">Pressure</span>
-                            <span class="font-semibold" id="pressure">1014 hPa</span>
+                            <span class="font-semibold" id="pressure">1014</span>
                         </div>
                     </div>
                 </section>
@@ -144,7 +144,7 @@
                 <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
                     <div class="rounded-2xl border border-slate-800 bg-slate-800/70 p-3 text-center">
                         <p class="text-sm text-slate-400">Now</p>
-                        <p class="mt-2 text-2xl font-semibold">24°</p>
+                        <p class="mt-2 text-2xl font-semibold"><span class="tem">24</span>°</p>
                         <p class="mt-2 text-2xl">☀️</p>
                     </div>
                     <div class="rounded-2xl border border-slate-800 bg-slate-800/70 p-3 text-center">
