@@ -1,37 +1,30 @@
 // putSearchlocaton use geoapify to get search lacation coords
 export const putSearchLocation = async (searchText) => {
-  const NOMINATIM_API = "https://nominatim.openstreetmap.org/search";
-  const requestOptions = {
-    method: "GET",
-  };
+  const resp = await fetch(
+    `https://api.geoapify.com/v1/geocode/search?text=${searchText}&lang=en&limit=5&format=json&apiKey=c53bd4b32be34f4e8840232a350dba5f`,
+  );
+
   try {
-    const resp = await fetch(
-      `${NOMINATIM_API}?format=json&q=${encodeURIComponent(searchText)}`,
-      requestOptions,
-    );
     if (!resp.ok) {
       return;
+      air_temperature_max;
     }
 
     const data = await resp.json();
 
     return {
-      lat: data[0].lat,
-      lon:data[0].lon,
-      name:data[0].display_name, 
-    }
-    
-
+      lat: data.results[0].lat,
+      lon: data.results[0].lon,
+      name: data.results[0].address_line1,
+    };
   } catch (e) {
     console.error(e);
+    throw error;
   }
 };
 
-
 // getWeatherDetails  get a param location object that contains coords lat , lon
 export const getWeatherDetails = async (location) => {
-  
-  
   const url = `https://api.met.no/weatherapi/locationforecast/2.0/complete?lat=${location.lat}&lon=${location.lon}`;
   try {
     const resp = await fetch(url, {
@@ -43,9 +36,25 @@ export const getWeatherDetails = async (location) => {
     if (!resp.ok) throw new Error(resp.status);
 
     const data = await resp.json();
-    console.log(data);
+    data.properties.timeseries.slice(0, 12).map((dt) => {
+     
+      const obj = {
+        time: new Date(dt.time).toLocaleTimeString(),
+        temperature: dt.data.next_6_hours.details.air_temperature_max,
+        precipitation: dt.data.next_6_hours.details.precipitation_amount,
+      };
+
+      const weatherInfo = (document.getElementById("weatherInfo").innerHTML =
+      `<div class="rounded-2xl border border-slate-800 bg-slate-800/70 p-3 text-center">
+                        <p class="text-sm text-slate-400">${obj.time}</p>
+                        <p class="mt-2 text-2xl font-semibold">${obj.temperature}°</p>
+                        <p class="mt-2 text-2xl">☀️</p>
+                    </div>`);
+                 
+    });
 
     const composeData = data.properties.timeseries[0].data.instant.details;
+    //  console.log(data);
 
     const currUserData = {
       temperature: composeData.dew_point_temperature,
@@ -84,11 +93,12 @@ export function browserLocationAccess() {
           lat: posit.coords.latitude,
           lon: posit.coords.longitude,
         });
-
-
-        putSearchLocation(`${posit.coords.latitude},${posit.coords.longitude}`).then((obj) => {
-          document.getElementById("locationName").innerText = obj.name;
-        });
+        putSearchLocation(
+          `${posit.coords.latitude},${posit.coords.longitude}`,
+        ).then(
+          (obj) =>
+            (document.getElementById("locationName").innerText = obj.name),
+        );
       },
       (error) => {
         console.log(
@@ -100,15 +110,3 @@ export function browserLocationAccess() {
     console.log(" User not support the loaction ");
   }
 }
-
-
-// export async function coordsToDetails(l) {
-//   const resp = await fetch(
-//     `https://api.geoapify.com/v1/geocode/search?text=${l.lat},${l.lon}&lang=en&limit=5&format=json&apiKey=c53bd4b32be34f4e8840232a350dba5f`,
-//   );
-
-//   const data = await resp.json();
-
-//   document.getElementById("locationName").innerText =
-//     data.results[0].address_line1;
-// }
