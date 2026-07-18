@@ -1,22 +1,26 @@
 // putSearchlocaton use geoapify to get search lacation coords
 export const putSearchLocation = async (searchText) => {
+console.log(searchText);
+
   const resp = await fetch(
     `https://api.geoapify.com/v1/geocode/search?text=${searchText}&lang=en&limit=5&format=json&apiKey=c53bd4b32be34f4e8840232a350dba5f`,
   );
 
+
   try {
     if (!resp.ok) {
       return;
-      air_temperature_max;
     }
 
     const data = await resp.json();
+      console.log("data", data);
 
     return {
       lat: data.results[0].lat,
       lon: data.results[0].lon,
       name: data.results[0].address_line1,
     };
+
   } catch (e) {
     console.error(e);
     throw error;
@@ -37,20 +41,18 @@ export const getWeatherDetails = async (location) => {
 
     const data = await resp.json();
     data.properties.timeseries.slice(0, 12).map((dt) => {
-     
       const obj = {
         time: new Date(dt.time).toLocaleTimeString(),
         temperature: dt.data.next_6_hours.details.air_temperature_max,
         precipitation: dt.data.next_6_hours.details.precipitation_amount,
       };
 
-      const weatherInfo = (document.getElementById("weatherInfo").innerHTML =
-      `<div class="rounded-2xl border border-slate-800 bg-slate-800/70 p-3 text-center">
+      const weatherInfo = document.getElementById("weatherInfo").innerText =
+        `<div class="rounded-2xl border border-slate-800 bg-slate-800/70 p-3 text-center">
                         <p class="text-sm text-slate-400">${obj.time}</p>
                         <p class="mt-2 text-2xl font-semibold">${obj.temperature}°</p>
                         <p class="mt-2 text-2xl">☀️</p>
-                    </div>`);
-                 
+                    </div>`
     });
 
     const composeData = data.properties.timeseries[0].data.instant.details;
@@ -89,21 +91,22 @@ export function browserLocationAccess() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       (posit) => {
+
         getWeatherDetails({
           lat: posit.coords.latitude,
           lon: posit.coords.longitude,
         });
+
+        console.log(posit.coords.latitude,"k",posit.coords.longitude);
+        
         putSearchLocation(
           `${posit.coords.latitude},${posit.coords.longitude}`,
         ).then(
-          (obj) =>
-            (document.getElementById("locationName").innerText = obj.name),
+          (obj) =>document.getElementById("locationName").innerText = obj.name
         );
       },
       (error) => {
-        console.log(
-          `Error code :${error.code} and error massage : ${error.massage}`,
-        );
+        throw error;
       },
     );
   } else {
