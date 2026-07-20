@@ -1,11 +1,8 @@
 // putSearchlocaton use geoapify to get search lacation coords
 export const putSearchLocation = async (searchText) => {
-console.log(searchText);
-
   const resp = await fetch(
-    `https://api.geoapify.com/v1/geocode/search?text=${searchText}&lang=en&limit=5&format=json&apiKey=c53bd4b32be34f4e8840232a350dba5f`,
+    `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchText)}`,
   );
-
 
   try {
     if (!resp.ok) {
@@ -13,14 +10,13 @@ console.log(searchText);
     }
 
     const data = await resp.json();
-      console.log("data", data);
 
     return {
-      lat: data.results[0].lat,
-      lon: data.results[0].lon,
-      name: data.results[0].address_line1,
+      lat: data[0].lat,
+      lon: data[0].lon,
+      name: data[0].name,
+      display_name: data[0].display_name.slice(0, 10),
     };
-
   } catch (e) {
     console.error(e);
     throw error;
@@ -40,21 +36,33 @@ export const getWeatherDetails = async (location) => {
     if (!resp.ok) throw new Error(resp.status);
 
     const data = await resp.json();
-    data.properties.timeseries.slice(0, 12).map((dt) => {
-      const obj = {
-        time: new Date(dt.time).toLocaleTimeString(),
-        temperature: dt.data.next_6_hours.details.air_temperature_max,
-        precipitation: dt.data.next_6_hours.details.precipitation_amount,
-      };
+    const timeseries = Array.isArray(data?.properties?.timeseries)
+      ? data.properties.timeseries.slice(0, 12)
+      : [];
 
-      const weatherInfo = document.getElementById("weatherInfo").innerText =
-        `<div class="rounded-2xl border border-slate-800 bg-slate-800/70 p-3 text-center">
-                        <p class="text-sm text-slate-400">${obj.time}</p>
-                        <p class="mt-2 text-2xl font-semibold">${obj.temperature}°</p>
-                        <p class="mt-2 text-2xl">☀️</p>
-                    </div>`
-    });
+    const Hourly = timeseries
+      .map((dt) => {
+        const time = new Date(dt.time).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        const temperature =
+          dt.data.next_6_hours?.details?.air_temperature_max ??
+          dt.data.instant.details.air_temperature;
+        const precipitation =
+          dt.data.next_6_hours?.details?.precipitation_amount ?? 0;
+        const icon = precipitation > 0 ? "🌧️" : "☀️";
 
+        return `<div class="rounded-2xl border border-slate-800 bg-slate-800/70 p-3 text-center">
+                        <p class="text-sm text-slate-400">${time}</p>
+                        <p class="mt-2 text-2xl font-semibold">${temperature}°</p>
+                        <p class="mt-2 text-2xl">${icon}</p>
+                    </div>`;
+      })
+      .join("");
+
+    document.getElementById("weatherInfo").innerHTML = Hourly;
+    
     const composeData = data.properties.timeseries[0].data.instant.details;
     //  console.log(data);
 
@@ -91,19 +99,15 @@ export function browserLocationAccess() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       (posit) => {
-
         getWeatherDetails({
           lat: posit.coords.latitude,
           lon: posit.coords.longitude,
         });
-
-        console.log(posit.coords.latitude,"k",posit.coords.longitude);
-        
         putSearchLocation(
           `${posit.coords.latitude},${posit.coords.longitude}`,
-        ).then(
-          (obj) =>document.getElementById("locationName").innerText = obj.name
-        );
+        ).then((obj) => {
+          document.getElementById("locationName").innerText = obj.display_name;
+        });
       },
       (error) => {
         throw error;
