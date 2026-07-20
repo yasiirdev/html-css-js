@@ -12,7 +12,7 @@ class weather {
   }
 
   setupStartingEvent() {
-    browserLocationAccess()
+    browserLocationAccess();
     this.button.addEventListener("click", (e) => {
       e.preventDefault();
       const val = this.searchFeild.value.trim();
